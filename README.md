@@ -1,2 +1,2 @@
 # rulesservice
-Rulesservice 2.0.0
+Rules Engine Vertx Service.
