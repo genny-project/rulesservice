@@ -8,7 +8,6 @@ RUN apk update && apk add jq && apk add bash && apk add curl
 
 
 RUN mkdir /realm
-RUN mkdir /rules
 ADD realm /opt/realm
 ADD docker-entrypoint.sh /docker-entrypoint.sh
 
@@ -28,4 +27,3 @@ HEALTHCHECK --interval=10s --timeout=10s --retries=30 CMD curl -f / http://local
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
 
 ADD target/rulesservice-2.0.0-fat.jar /service.jar
-ADD src/main/resources/rules /rules
