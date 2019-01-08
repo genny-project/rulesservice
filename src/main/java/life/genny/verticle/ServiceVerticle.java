@@ -36,7 +36,7 @@ public class ServiceVerticle extends AbstractVerticle {
   @Override
   public void start() {
 
-    System.out.println("Loading initial Rules");
+    log.info("Loading initial Rules");
     final Future<Void> startFuture = Future.future();
     Cluster.joinCluster().compose(res -> {
       final Future<Void> fut = Future.future();
