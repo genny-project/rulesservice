@@ -26,4 +26,4 @@ HEALTHCHECK --interval=10s --timeout=10s --retries=30 CMD curl -f / http://local
 
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
 
-ADD target/rulesservice-2.0.0-fat.jar /service.jar
+ADD target/rulesservice-fat.jar /service.jar
