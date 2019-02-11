@@ -188,7 +188,7 @@ public class EBCHandlers {
 	}
 
 	public static void processMsg(final String msgType,String ruleGroup,final Object msg, final EventBusInterface eventBus, final String token) {
-		boolean ordered = true;
+		boolean ordered = false;
 		WorkerExecutor executor = Vertx.currentContext().owner().createSharedWorkerExecutor("incoming-msg-worker-pool");
 		executor.executeBlocking(future -> {
 		//	Vertx.deployVerticle(new WorkerVerticle(), options, future -> {
