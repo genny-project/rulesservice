@@ -12,12 +12,14 @@ import org.apache.commons.lang3.StringUtils;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import io.vavr.Tuple3;
+import io.vertx.core.DeploymentOptions;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.rxjava.core.Future;
 import io.vertx.rxjava.core.Vertx;
+import io.vertx.rxjava.core.WorkerExecutor;
 import io.vertx.rxjava.core.eventbus.EventBus;
 import life.genny.channel.Consumer;
 import life.genny.eventbus.EventBusInterface;
@@ -48,10 +50,13 @@ public class EBCHandlers {
 //			.getLogger(MethodHandles.lookup().lookupClass().getCanonicalName());
 
 	static Logger log = LoggerFactory.getLogger(EBCHandlers.class);
+	
+	static int DEFAULT_WORKER_POOL_SIZE = 100;
 
 	static Map<String, Object> decodedToken = null;
 
-	
+	static final DeploymentOptions options =  new DeploymentOptions().setWorker(true)
+            .setWorkerPoolSize(DEFAULT_WORKER_POOL_SIZE);
 
 
 	static String token;
@@ -75,6 +80,8 @@ public class EBCHandlers {
 			}
 
 		});
+		
+        
 
 		Consumer.getFromEvents().subscribe(arg -> {
 		
@@ -181,14 +188,19 @@ public class EBCHandlers {
 	}
 
 	public static void processMsg(final String msgType,String ruleGroup,final Object msg, final EventBusInterface eventBus, final String token) {
-		Vertx.currentContext().owner().executeBlocking(future -> {
+		boolean ordered = false;
+		WorkerExecutor executor = Vertx.currentContext().owner().createSharedWorkerExecutor("incoming-msg-worker-pool");
+		executor.executeBlocking(future -> {
+		//	Vertx.deployVerticle(new WorkerVerticle(), options, future -> {
+		//Vertx.currentContext().owner().executeBlocking(future -> {
 						
 			RulesLoader.processMsg(msgType, ruleGroup, msg, eventBus, token);
 			
 			future.complete();
-		}, res -> {
+		},ordered, res -> {
 			if (res.succeeded()) {
 				//System.out.println("Processed "+msgType+" Msg");
+				executor.close();
 			}
 		});
 

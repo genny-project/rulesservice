@@ -19,7 +19,8 @@
     </logger>
 	
     <logger name="io.netty.handler.codec.http.websocketx.WebSocket08FrameDecoder" level="WARN"/>
-    <logger name="com.hazelcast.internal.diagnostics.HealthMonitor" level="ERROR" />
-    <logger name="io.vertx.core.VertxException  level="ERROR" />
+    <logger name="com.hazelcast.internal.diagnostics.HealthMonitor" level="OFF" />
+    <logger name="io.vertx.core.VertxException  level="OFF" />
+    <logger name="io.vertx.core.impl.BlockedThreadChecker" level="OFF" />
 </configuration>
 
