@@ -121,7 +121,7 @@ public class EBCHandlers {
 					String ruleText = ja.getJsonObject(0).getString("rule");
 					String ruleCode = ja.getJsonObject(0).getString("code");
 					// QDataRuleMessage ruleMsg = gson3.fromJson(json, QDataRuleMessage.class);
-					System.out.println("Incoming Rule :" + ruleText);
+					log.info("Incoming Rule :" + ruleText);
 
 					String rulesGroup = GennySettings.rulesDir;
 					List<Tuple3<String,String, String>> rules = new ArrayList<Tuple3<String,String, String>>();
@@ -129,7 +129,7 @@ public class EBCHandlers {
 
 					RulesLoader.setupKieRules(rulesGroup, rules);
 				} else if (payload.getString("data_type").equals(Answer.class.getSimpleName())) {
-					System.out.println("DATA Msg :");;
+					log.info("DATA Msg :");;
 					try {
 						dataMsg = JsonUtils.fromJson(payload.toString(), QDataAnswerMessage.class);
 						processMsg("Data:"+dataMsg.getData_type(), payload.getString("ruleGroup"),dataMsg, eventBus, payload.getString("token"));
@@ -199,7 +199,7 @@ public class EBCHandlers {
 			future.complete();
 		},ordered, res -> {
 			if (res.succeeded()) {
-				//System.out.println("Processed "+msgType+" Msg");
+				//log.info("Processed "+msgType+" Msg");
 				executor.close();
 			}
 		});

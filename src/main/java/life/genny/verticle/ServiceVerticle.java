@@ -50,10 +50,14 @@ public class ServiceVerticle extends AbstractVerticle {
         final Future<Void> rfut = Future.future();
         SecureResources.setKeycloakJsonMap().compose(r -> {
      	    final Future<Void> startupfut = Future.future();
-    	     triggerStartupRules(GennySettings.rulesDir, eventBus).compose(q -> {
-    	        startupfut.complete();
-    	        
-    	    }, startupfut);
+     	    if (!"TRUE".equalsIgnoreCase(System.getenv("DISABLE_INIT_RULES_STARTUP"))) {
+     	    	triggerStartupRules(GennySettings.rulesDir, eventBus).compose(q -> {
+     	    		startupfut.complete();
+     	    	}, startupfut);
+     	    }
+     	   else {
+    	    	log.warn("DISABLE_INIT_RULES_STARTUP IS TRUE -> No Init Rules triggered.");
+    	    }
     	  if (GennySettings.isRulesManager) {
      		  Routers.routers(vertx);
     		  Routers.activate(vertx);
@@ -65,6 +69,7 @@ public class ServiceVerticle extends AbstractVerticle {
         
 
         fut.complete();
+        log.info("Rulesservice started");
       }, fut);
        
   
