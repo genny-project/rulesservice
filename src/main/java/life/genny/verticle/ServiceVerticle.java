@@ -23,7 +23,6 @@ import life.genny.qwanda.message.QEventMessage;
 import life.genny.qwandautils.GennyCacheInterface;
 import life.genny.qwandautils.GennySettings;
 import life.genny.rules.RulesLoader;
-import life.genny.security.SecureResources;
 import life.genny.utils.VertxUtils;
 
 public class ServiceVerticle extends AbstractVerticle {
@@ -33,50 +32,45 @@ public class ServiceVerticle extends AbstractVerticle {
 
 	
 
-  @Override
   public void start() {
 
-    log.info("Loading initial Rules");
-    final Future<Void> startFuture = Future.future();
-    Cluster.joinCluster().compose(res -> {
-      final Future<Void> fut = Future.future();
-      EventBusInterface eventBus = new EventBusVertx();
-      GennyCacheInterface vertxCache = new VertxCache();
-      VertxUtils.init(eventBus,vertxCache);
-       loadInitialRules(GennySettings.rulesDir).compose(p -> {
-  //      Routers.routers(vertx);
-        
-        // Load in realm data
-        final Future<Void> rfut = Future.future();
-        SecureResources.setKeycloakJsonMap().compose(r -> {
-     	    final Future<Void> startupfut = Future.future();
-     	    if (!"TRUE".equalsIgnoreCase(System.getenv("DISABLE_INIT_RULES_STARTUP"))) {
-     	    	triggerStartupRules(GennySettings.rulesDir, eventBus).compose(q -> {
-     	    		startupfut.complete();
-     	    	}, startupfut);
-     	    }
-     	   else {
-    	    	log.warn("DISABLE_INIT_RULES_STARTUP IS TRUE -> No Init Rules triggered.");
-    	    }
-    	  if (GennySettings.isRulesManager) {
-     		  Routers.routers(vertx);
-    		  Routers.activate(vertx);
-    	  }
-          rfut.complete();
-        }, rfut);
-        
-        EBCHandlers.registerHandlers(eventBus);
-        
+	    log.info("Loading initial Rules");
+	    final Future<Void> startFuture = Future.future();
+	    Cluster.joinCluster().compose(res -> {
+	      final Future<Void> fut = Future.future();
+	      EventBusInterface eventBus = new EventBusVertx();
+	      GennyCacheInterface vertxCache = new VertxCache();
+	      VertxUtils.init(eventBus,vertxCache);
+	       loadInitialRules(GennySettings.rulesDir).compose(p -> {
+	  //      Routers.routers(vertx);
+	        
+	        // Load in realm data
+	     	    final Future<Void> startupfut = Future.future();
+	     	    if (!"TRUE".equalsIgnoreCase(System.getenv("DISABLE_INIT_RULES_STARTUP"))) {
+	     	    	triggerStartupRules(GennySettings.rulesDir, eventBus).compose(q -> {
+	     	    		startupfut.complete();
+	     	    	}, startupfut);
+	     	    }
+	     	   else {
+	    	    	log.warn("DISABLE_INIT_RULES_STARTUP IS TRUE -> No Init Rules triggered.");
+	    	    }
+	    	  if (GennySettings.isRulesManager) {
+	     		  Routers.routers(vertx);
+	    		  Routers.activate(vertx);
+	    	  }
+	        
+	        EBCHandlers.registerHandlers(eventBus);
+	        
 
-        fut.complete();
-        log.info("Rulesservice started");
-      }, fut);
-       
-  
-    }, startFuture);
-   
+	        fut.complete();
+	        log.info("Rulesservice started");
+	      }, fut);
+	       
+	  
+	    }, startFuture);
+	   
 
-  }
+	  }
   
 	/**
 	 * @param vertx
