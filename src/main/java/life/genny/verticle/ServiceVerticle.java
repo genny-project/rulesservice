@@ -27,36 +27,45 @@ public class ServiceVerticle extends AbstractVerticle {
 			.getLogger(MethodHandles.lookup().lookupClass().getCanonicalName());
 
 	@Override
-	public void start() {
-		log.info("Setting up routes");
-		final Future<Void> startFuture = Future.future();
-		Cluster.joinCluster().compose(res -> {
-			EventBusInterface eventBus = new EventBusVertx();
-			GennyCacheInterface vertxCache = new VertxCache();
-			VertxUtils.init(eventBus, vertxCache);
+	  public void start() {
 
-			final Future<Void> startupfut = Future.future();
-			if (!"TRUE".equalsIgnoreCase(System.getenv("DISABLE_INIT_RULES_STARTUP"))) {
-				triggerStartupRules(GennySettings.rulesDir, eventBus).compose(q -> {
-					startupfut.complete();
-				}, startupfut);
-			} else {
-				log.warn("DISABLE_INIT_RULES_STARTUP IS TRUE -> No Init Rules triggered.");
-			}
+	    log.info("Loading initial Rules");
+	    final Future<Void> startFuture = Future.future();
+	    Cluster.joinCluster().compose(res -> {
+	      final Future<Void> fut = Future.future();
+	      EventBusInterface eventBus = new EventBusVertx();
+	      GennyCacheInterface vertxCache = new VertxCache();
+	      VertxUtils.init(eventBus,vertxCache);
+	       loadInitialRules(GennySettings.rulesDir).compose(p -> {
+	  
+	     	    final Future<Void> startupfut = Future.future();
+	     	    String disableRules = System.getenv("DISABLE_INIT_RULES_STARTUP");
+	     	    if (!"TRUE".equalsIgnoreCase(disableRules)) {
+	     	    	triggerStartupRules(GennySettings.rulesDir, eventBus).compose(q -> {
+	     	    		startupfut.complete();
+	     	    	}, startupfut);
+	     	    }
+	     	   else {
+	    	    	log.warn("DISABLE_INIT_RULES_STARTUP IS TRUE -> No Init Rules triggered.");
+	    	    }
+	    	  if (GennySettings.isRulesManager) {
+	     		  Routers.routers(vertx);
+	    		  Routers.activate(vertx);
+	    	  }
+	        
+	        EBCHandlers.registerHandlers(eventBus);
+	        
 
-			EBCHandlers.registerHandlers(eventBus);
+	        fut.complete();
+	        log.info("Rulesservice started");
+	      }, fut);
+	       
+	  
+	    }, startFuture);
+	   
 
-			if (GennySettings.isRulesManager) {
-				Routers.routers(vertx);
-				Routers.activate(vertx);
-			}
-
-			log.info("Rulesservice now ready");
-
-			startFuture.complete();
-		}, startFuture);
-
-	}
+	  }
+	  
 
 	/**
 	 * @param vertx
