@@ -42,18 +42,19 @@ public class ServiceVerticle extends AbstractVerticle {
 	     	    String disableRules = System.getenv("DISABLE_INIT_RULES_STARTUP");
 	     	    if (!"TRUE".equalsIgnoreCase(disableRules)) {
 	     	    	triggerStartupRules(GennySettings.rulesDir, eventBus).compose(q -> {
+	     		    	  if (GennySettings.isRulesManager) {
+	     		     		  Routers.routers(vertx);
+	     		    		  Routers.activate(vertx);
+	     		    	  }
+	     		        
+	     		        EBCHandlers.registerHandlers(eventBus);
+
 	     	    		startupfut.complete();
 	     	    	}, startupfut);
 	     	    }
 	     	   else {
 	    	    	log.warn("DISABLE_INIT_RULES_STARTUP IS TRUE -> No Init Rules triggered.");
 	    	    }
-	    	  if (GennySettings.isRulesManager) {
-	     		  Routers.routers(vertx);
-	    		  Routers.activate(vertx);
-	    	  }
-	        
-	        EBCHandlers.registerHandlers(eventBus);
 	        
 
 	        fut.complete();

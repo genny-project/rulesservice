@@ -11,17 +11,24 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
+import javax.xml.bind.DatatypeConverter;
 
 import org.javamoney.moneta.Money;
 import org.junit.Test;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import life.genny.eventbus.EventBusInterface;
 import life.genny.qwandautils.QwandaUtils;
+import life.genny.qwandautils.SecurityUtils;
 import life.genny.rules.QRules;
 import life.genny.utils.StringFormattingUtils;
 
@@ -31,7 +38,24 @@ public class FeeCalculationTest {
 
 	@Test
 	public void generatePasscodeTest() {
-		QRules rules = new QRules(null, null, null);
+		String secret = "IamAnApiSecret";
+		Map<String,Object> claims = new HashMap<String, Object>();
+		claims.put("preferred_username", "user1");
+		claims.put("realm", "genny");
+		String jwt = SecurityUtils.createJwt("ABBCD", "Genny Project", "Test JWT", 100000, secret,claims);
+		System.out.println("JwtTest = "+jwt);
+		
+		   //This line will throw an exception if it is not a signed JWS (as expected)
+	    Claims decodedClaims = Jwts.parser()         
+	       .setSigningKey(DatatypeConverter.parseBase64Binary(secret))
+	       .parseClaimsJws(jwt).getBody();
+//	    System.out.println("ID: " + decodedClaims.getId());
+//	    System.out.println("Subject: " + decodedClaims.getSubject());
+//	    System.out.println("Issuer: " + decodedClaims.getIssuer());
+//	    System.out.println("Expiration: " + decodedClaims.getExpiration());
+//	    System.out.println("Username: "+ decodedClaims.get("preferred_username"));
+//	    System.out.println("realm: "+ decodedClaims.get("realm"));	    
+		QRules rules = new QRules((EventBusInterface)null, jwt);
 		for(int i=0; i<= 10; i++) {
 		  System.out.println("The passcode is::"+rules.generateVerificationCode());
 
