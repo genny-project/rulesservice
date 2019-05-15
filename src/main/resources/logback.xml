@@ -20,7 +20,11 @@
 	
     <logger name="io.netty.handler.codec.http.websocketx.WebSocket08FrameDecoder" level="WARN"/>
     <logger name="com.hazelcast.internal.diagnostics.HealthMonitor" level="OFF" />
-    <logger name="io.vertx.core.VertxException  level="OFF" />
+    <logger name="io.vertx.core.VertxException"  level="OFF" />
     <logger name="io.vertx.core.impl.BlockedThreadChecker" level="OFF" />
+    <logger name="org.drools.compiler.kie.builder.impl.KieBuilderImpl" level="OFF" />
+    <Logger name="com.jbpm.log"  level="INFO"> 
+		<appender-ref ref="consoleAppender" />
+	</Logger>
 </configuration>
 

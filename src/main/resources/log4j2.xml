@@ -12,5 +12,6 @@
 		<logger name="life.genny" level="TRACE" />
 		<logger name="io.vertx.core.impl.BlockedThreadChecker" level="OFF" />
 		<logger name="io.vertx.core.VertxException" level="OFF" />
+		<logger name="org.drools.compiler.kie.builder.impl.KieBuilderImpl" level="OFF" />
 	</Loggers>
 </Configuration>
