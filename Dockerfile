@@ -10,7 +10,10 @@ RUN apk update && apk add jq && apk add bash && apk add curl
 RUN mkdir /realm
 ADD realm /opt/realm
 ADD docker-entrypoint.sh /docker-entrypoint.sh
-
+RUN mkdir -p /.m2/conf
+ADD settings.xml /.m2/conf/settings.xml
+ARG m2_variable=/.m2
+ENV M2_HOME=$m2_variable
 WORKDIR /
 
 EXPOSE 5701
