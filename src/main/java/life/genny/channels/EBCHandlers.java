@@ -63,6 +63,21 @@ public class EBCHandlers {
 
 	public static void registerHandlers(EventBusInterface eventBus) {
 		
+		Consumer.getFromHealth().subscribe(arg -> {
+			JsonObject payload = processMessage("Health Command", arg);
+
+					final Future<Void> fut = Future.future();
+					Vertx.currentContext().owner().executeBlocking(exec -> {
+						log.info("RulesServic received Health check from bridge.");
+						// test qwanda-service api
+						fut.complete();
+					}, failed -> {
+					});
+
+		});
+		
+		
+		
 		Consumer.getFromCmds().subscribe(arg -> {
 			JsonObject payload = processMessage("Service Command", arg);
 

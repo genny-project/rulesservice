@@ -48,6 +48,10 @@ public class ServiceVerticle extends AbstractVerticle {
 	     		    	  }
 	     		        
 	     		        EBCHandlers.registerHandlers(eventBus);
+	     		        
+	     		       vertx.eventBus().consumer("health", (message) -> {
+	     		            log.info("HEALTH CHECK RX"/*message.body().toString().length()*/);
+	     		        });
 
 	     	    		startupfut.complete();
 	     	    	}, startupfut);
