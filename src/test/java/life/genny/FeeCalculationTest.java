@@ -55,15 +55,15 @@ public class FeeCalculationTest {
 //	    System.out.println("Expiration: " + decodedClaims.getExpiration());
 //	    System.out.println("Username: "+ decodedClaims.get("preferred_username"));
 //	    System.out.println("realm: "+ decodedClaims.get("realm"));	    
-		QRules rules = new QRules((EventBusInterface)null, jwt);
-		for(int i=0; i<= 10; i++) {
-		  System.out.println("The passcode is::"+rules.generateVerificationCode());
-
-		}
-		System.out.println(String.format("%04d", 0));
-		System.out.println(String.format("%04d", 12));
-		System.out.println(String.format("%04d", 123));
-		System.out.println(String.format("%04d", 1234));
+//		QRules rules = new QRules((EventBusInterface)null, jwt);
+//		for(int i=0; i<= 10; i++) {
+//		  System.out.println("The passcode is::"+rules.generateVerificationCode());
+//
+//		}
+//		System.out.println(String.format("%04d", 0));
+//		System.out.println(String.format("%04d", 12));
+//		System.out.println(String.format("%04d", 123));
+//		System.out.println(String.format("%04d", 1234));
 	}
 
 	@Test
