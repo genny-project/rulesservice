@@ -100,8 +100,7 @@ public class ServiceVerticle extends AbstractVerticle {
 		final Future<Void> fut = Future.future();
 		Vertx.currentContext().owner().executeBlocking(exec -> {// Force Genny first
 			log.info("---- Realm:genny Startup Rules ----------");
-
-			RulesLoader.initMsgs("Event:INIT_STARTUP", new QEventMessage("EVT_MSG", "INIT_STARTUP"), eventBus);
+			RulesLoader.triggerStartupRules(rulesDir, eventBus);
 			fut.complete();
 		}, failed -> {
 		});
