@@ -19,7 +19,7 @@
 		<genny-rules.version>${version}</genny-rules.version>
 		<log4j-core-version>2.11.1</log4j-core-version>
 		<vertx.version>3.5.1</vertx.version>
-		<junit-version>4.12</junit-version>
+		<junit-version>4.13.1</junit-version>
 		<version.resteasy>3.0.10.Final</version.resteasy>
 		<resteasy.version>3.0.9.Final</resteasy.version>
 		<hazelcast.version>3.8.2</hazelcast.version>
