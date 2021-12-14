@@ -17,7 +17,7 @@
 
 	<properties>
 		<genny-rules.version>${version}</genny-rules.version>
-		<log4j-core-version>2.11.1</log4j-core-version>
+		<log4j-core-version>2.16.0</log4j-core-version>
 		<vertx.version>3.5.1</vertx.version>
 		<junit-version>4.12</junit-version>
 		<version.resteasy>3.0.10.Final</version.resteasy>
